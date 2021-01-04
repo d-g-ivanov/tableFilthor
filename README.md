@@ -116,22 +116,22 @@ tableFilthor.init({
 
 The config object can contain following properties.
 	
-` debounceTime ` - number of miliseconds, defaults to 500.\ 
+` debounceTime ` - number of miliseconds, defaults to 500.<br/>
 Since applying the filters to the table happens while typing, the application is delayed by the `debounceTime` value to spare resources.
 
-` minRows ` - integer, defailts to 15.\ 
+` minRows ` - integer, defailts to 15.<br/>
 Minimum number of table rows for the filtering to be applied to a table. If the table has less rows than that, the filter bar will be omitted.
 
-` skipColumns ` - array of integers, dafults to empty array.\ 
+` skipColumns ` - array of integers, dafults to empty array.<br/>
 Defines which columns should **NOT** received a filter input. I.e., the columns should not be filterable. Column numbers are 1-based, meaning that first column is 1, second column is 2, etc.
 
 ` exactMatches ` - boolean, defaults to false.\ 
 Determines if the search term should be case sensitive. This can be controlled once the filter bar is applied.
 
-` summaryType ` - string, 'simple' or 'complex', defaults to 'simple'.\ 
+` summaryType ` - string, 'simple' or 'complex', defaults to 'simple'.<br/>
 TableFilthor can create a summary table with count statistics for the different column values. The summary tables can be simple (based on only 1 column) or complex (based on multi-column cross-referencing). This can be controlled once the filter bar is applied.
 
-` theme ` - object, defaults are below.\ 
+` theme ` - object, defaults are below.<br/>
 Contains theme color information for the filter bar, so that an attempt can be made to make the plug-in fit naturally to the design of the table.
 
 ```sh
