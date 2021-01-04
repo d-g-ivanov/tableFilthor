@@ -66,11 +66,11 @@ Scripts use very few "new" JavaScript features, such as template literals.
 
 ### Installation
 
-** Browser **
+**Browser**
 1. Insert a script tag with a link to the browser version of tableFilthor.
 
 
-** Userscript **
+**Userscript**
 1. Install the Tampermonkey extension.
 2. Load the userscript.
 3. [Optional] Edit the ` @match ` field of the script to limit the affected URLs, and/or change the init invocation at the end to limit the tables to which filtering should be applied (as well as other options).
@@ -79,7 +79,7 @@ Scripts use very few "new" JavaScript features, such as template literals.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-** Browser **
+**Browser**
 Once loaded the script exposes global object called ` tableFilthor `. For now, it contains only 1 method named ` init ` that allows you to initiate it multiple times to create filter settings per table or group of tables.
 
 
