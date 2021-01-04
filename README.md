@@ -154,6 +154,8 @@ Contains theme color information for the filter bar, so that an attempt can be m
 
 2. Adding examples
 
+3. Excel-like filter dropdowns
+
 
 
 <!-- CONTRIBUTING -->
