@@ -80,6 +80,7 @@ Scripts use very few "new" JavaScript features, such as template literals.
 ## Usage
 
 **>> Browser**
+
 Once loaded the script exposes global object called ` tableFilthor `. For now, it contains only 1 method named ` init ` that allows you to initiate it multiple times to create filter settings per table or group of tables.
 
 
