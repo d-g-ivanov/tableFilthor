@@ -125,7 +125,7 @@ Minimum number of table rows for the filtering to be applied to a table. If the 
 ` skipColumns ` - array of integers, dafults to empty array.<br/>
 Defines which columns should **NOT** received a filter input. I.e., the columns should not be filterable. Column numbers are 1-based, meaning that first column is 1, second column is 2, etc.
 
-` exactMatches ` - boolean, defaults to false.\ 
+` exactMatches ` - boolean, defaults to false.<br/>
 Determines if the search term should be case sensitive. This can be controlled once the filter bar is applied.
 
 ` summaryType ` - string, 'simple' or 'complex', defaults to 'simple'.<br/>
