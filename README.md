@@ -50,7 +50,7 @@ Pure Javascript, no dependencies.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-In the src folder you will find 2 JavaScript files. Pick hte one that suits your needs.
+In the ` src ` folder you will find 2 JavaScript files. Pick the one that suits your needs.
 
 1. ` tableFilthor.js ` - made for the browser. Once loaded there will be a global object exposed with a single init method. Namespace is ` tableFilthor `.
 
