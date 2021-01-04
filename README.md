@@ -73,7 +73,7 @@ Scripts use very few "new" JavaScript features, such as template literals.
 ** Userscript **
 1. Install the Tampermonkey extension.
 2. Load the userscript.
-3. [Optional] Edit the ```sh @match ``` field of the script to limit the affected URLs, and/or change the init invocation at the end to limit the tables to which filtering should be applied (as well as other options).
+3. [Optional] Edit the ` @match ` field of the script to limit the affected URLs, and/or change the init invocation at the end to limit the tables to which filtering should be applied (as well as other options).
 
 
 <!-- USAGE EXAMPLES -->
@@ -119,7 +119,7 @@ The config object can contain following properties.
 
 ` minRows ` - integer, defailts to 15. Minimum number of table rows for the filtering to be applied to a table. If the table has less rows than that, the filter bar will be omitted.
 
-` skipColumns ` - array of integers, dafults to empty array. Defines which columns should *NOT* received a filter input. I.e., the columns should not be filterable. Column numbers are 1-based, meaning that first column is 1, second column is 2, etc.
+` skipColumns ` - array of integers, dafults to empty array. Defines which columns should **NOT** received a filter input. I.e., the columns should not be filterable. Column numbers are 1-based, meaning that first column is 1, second column is 2, etc.
 
 ` exactMatches ` - boolean, defaults to false. Determines if the search term should be case sensitive. This can be controlled once the filter bar is applied.
 
