@@ -1,7 +1,7 @@
 /*!
  * TableFilthor - Add filtering to tables on any webpage
  *
- * tableFilthor v0.1.0
+ * tableFilthor v0.2.0
  * (c) 2021 Daniel Ivanov
  */
  
@@ -41,7 +41,7 @@
     /* DEFAULT SETTINGS */
 	const DEFAULT_OPTIONS = {
 		debouceTime: 500,
-		minRows: 15,
+		minRows: 3,
         skipColumns: [],
         exactMatches: false,
         summaryType: 'simple',
@@ -78,6 +78,21 @@
     const ACTIONS = {
         // download filtered table as csv
         download: function (event, table) {
+            const csv_string = exportTableToCSV(table);
+            // Download it
+            let filename = 'export_' + new Date().toLocaleString() + '.csv';
+            let link = document.createElement('a');
+            link.style.display = 'none';
+            link.setAttribute('target', '_blank');
+            // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
+            // https://www.shieldui.com/javascript-unicode-csv-export
+            link.setAttribute('href', csv_string);
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
+        _original_download: function (event, table) {
             let separator = ',';
             // Select rows from table_id
             let rows = table.table.rows;
@@ -104,7 +119,9 @@
             let link = document.createElement('a');
             link.style.display = 'none';
             link.setAttribute('target', '_blank');
-            link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+            // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
+            // https://www.shieldui.com/javascript-unicode-csv-export
+            link.setAttribute('href', 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv_string));
             link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
@@ -138,7 +155,7 @@
         },
         // remove the filter bar
         remove: function (event, table) {
-            if (!confirm('Are you sure you want to remove the filter bar? You will need to refresh the page in order to ge tit back.')) return;
+            if (!confirm('Are you sure you want to remove the filter bar? You will need to refresh the page in order to get it back.')) return;
 
             // remove any applied filters
             ACTIONS.reset(event, table);
@@ -366,6 +383,54 @@
 
 
     /* GENERAL UTILITIES */
+	// https://gist.github.com/maciejjankowski/2db91642fb9eaa771111f2c0538e4560
+	function exportTableToCSV(table) {
+		const rows = Array.prototype.slice.call(table.table.rows);
+
+		// Temporary delimiter characters unlikely to be typed by keyboard
+		// This is to avoid accidentally splitting the actual contents
+		const tmpColDelim = String.fromCharCode(11); // vertical tab character
+		const tmpRowDelim = String.fromCharCode(0); // null character
+
+		// actual delimiter characters for CSV format
+		const colDelim = '"\t"';
+		const rowDelim = '"\r\n"';
+
+		// Grab text from table into CSV formatted string
+		let csv = '"' + rows.map(function (row) {
+
+			if (row.style.display === 'none') return null;
+
+			let cols = Array.prototype.slice.call(row.querySelectorAll('td, th'));
+
+			return cols.map(function (col) {
+				// Clean innertext to remove multiple spaces and jumpline (break csv)
+				let text = col.innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+				// Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+				return text.replace(/"/g, '""'); // escape double quotes
+
+			}).join(tmpColDelim);
+
+		}).filter(function(row) { return row !== null; })
+		.join(tmpRowDelim)
+		.split(tmpRowDelim).join(rowDelim)
+		.split(tmpColDelim).join(colDelim) + '"';
+
+		// Data URI
+		const bom = decodeURIComponent("%EF%BB%BF");// "\uFEFF\n";
+		const byteArray = [];
+		csv = bom + csv;
+
+		const csvA = new Uint16Array(csv.split('').map( function(k, v){
+			return k.charCodeAt(0);
+		}));
+
+		const blob = new Blob([csvA],{type:'text/csv;charset=UTF-16LE;'});
+		const blobUrl=URL.createObjectURL(blob);
+
+		return blobUrl;
+	}
+	
 	function debounce(delay, fn) {
 	  let timerId;
 	  return function (...args) {
@@ -441,7 +506,6 @@
     function applyStyles(opts) {
         let theme = opts.theme;
         let css = `
-/* TABLE FILTHOR */
 #table-filthor { background-color: ${theme.background}; color: ${theme.color}; }
 
 /* TRs */
@@ -1007,23 +1071,27 @@ ${content.css ? content.css : ''}
         panel.className = 'filter-panel';
 		panel.innerHTML = `<td colspan="${table.tr[0].cells.length}"><div>
 <div class="table-filthor-icons">
-<input type='checkbox' name='pin' value='pinned' id="pinning" checked/><label for="pinning" class="filthor-icon" title="Pin/unpin the filter bar">${ASSETS.pin}</label>
-<input type='checkbox' name='exact' value='exact' id="exact" /><label for="exact" class="filthor-icon" title="Search exact capitalization">${ASSETS.exact}</label>
+   <input type='checkbox' name='pin' value='pinned' id="pinning" checked/>
+   <label for="pinning" class="filthor-icon" title="Pin/unpin the filter bar">${ASSETS.pin}</label>
+   <input type='checkbox' name='exact' value='exact' id="exact" />
+   <label for="exact" class="filthor-icon" title="Search exact capitalization">${ASSETS.exact}</label>
 </div>
 <div class="table-filthor-actions">
-<a class="filthor-icon" type="button" data-action="reset" title="Clear all filters">${ASSETS.filter}</a>
-<a class="filthor-icon" type="button" data-action="remove" title="Remove the filters' bar">${ASSETS.remove}</a>
-<a class="filthor-icon" type="button" data-action="download" title="Download table as CSV file">${ASSETS.download}</a>
+   <a class="filthor-icon" type="button" data-action="reset" title="Clear all filters">${ASSETS.filter}</a>
+   <a class="filthor-icon" type="button" data-action="remove" title="Remove the filters' bar">${ASSETS.remove}</a>
+   <a class="filthor-icon" type="button" data-action="download" title="Download table as CSV file">${ASSETS.download}</a>
 </div>
 <div class="table-filthor-actions table-filthor-presets">
-<a class="filthor-icon" type="button" data-action="save" title="Save current filter for future use">${ASSETS.save}</a>
-<a class="filthor-icon" type="button" data-action="unsave" title="Delete a saved filter by its name">${ASSETS.unsave}</a>
+   <a class="filthor-icon" type="button" data-action="save" title="Save current filter for future use">${ASSETS.save}</a>
+   <a class="filthor-icon" type="button" data-action="unsave" title="Delete a saved filter by its name">${ASSETS.unsave}</a>
 </div>
 <div class="table-filthor-actions end">
-<a class="filthor-icon" type="button" data-action="help" title="Open info panel">${ASSETS.help}</a>
+   <a class="filthor-icon" type="button" data-action="help" title="Open info panel">${ASSETS.help}</a>
 </div>
-<div class="table-filthor-stats"><a type="button" data-action="stats" title="See more stats">${table.tr.length} of ${table.tr.length} rows</a></div>
-<div></td>`;
+<div class="table-filthor-stats">
+   <a type="button" data-action="stats" title="See more stats">${table.tr.length} of ${table.tr.length} rows</a>
+</div>
+</td>`;
 
         // add event delegation
 		panel.addEventListener('click', handleClick.bind(table) );
@@ -1139,7 +1207,7 @@ ${content.css ? content.css : ''}
 
                 // actual filtering
 				let txtValue = td.textContent || td.innerText;
-                let match = doesMatch(txtValue, filter, table.options);
+                let match = doesMatch(txtValue, filter, tableObj.options);
 
                 if ( !match ) {
                     isDisplay = false;
