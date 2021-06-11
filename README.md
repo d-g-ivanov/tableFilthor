@@ -143,8 +143,22 @@ Contains theme color information for the filter bar, so that an attempt can be m
 	actionColor: 'white',
 	iconFill: 'white',
 	iconActiveFill: 'yellow',
+	resizerActiveFill: 'yellow' // version 02 only, resizing feature availble only in it
 }
   ```
+
+
+<!-- ROADMAP -->
+## Updates
+
+Version 02 has just been added which introduces following updates. No breaking changes, just additional features added. Kept it in separate files as per requirement.
+
+1. Column resizing - right border of the filter cell
+2. Column hiding via context menu - context meny triggered via right-click on the control panel (bar above the filters)
+3. Mixed modes via brackets, eg. smth && (smth || smth)
+4. Summary table values are filterable - clicking on the count will append the filter to the table
+5. Saving the summary table type (simple / complex) and loading it from local storage
+6. Help menu updated to reflect new features
 
 
 <!-- ROADMAP -->
