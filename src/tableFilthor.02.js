@@ -1421,7 +1421,7 @@ ${content.css ? content.css : ''}
 
         // SummaryType
         const summaryStore = STORE.retrieve(table.selector + "--summaries");
-        if (summaryStore.summaryType) table.options.summaryType = summaryStore.summaryType;
+        if (summaryStore && summaryStore.summaryType) table.options.summaryType = summaryStore.summaryType;
     }
 
     function attachEvents(table) {
