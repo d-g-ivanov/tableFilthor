@@ -629,6 +629,26 @@ WHAT'S NEW IN 0.2
         '||': function(text, filters, opts) { return filters.some( filter => _someMatch(text, filter, opts) ) },
         '!|': function(text, filters, opts) { return filters.map( filter => _everyMatch(text, filter, opts) ).filter(v => v).length == 1 }, //https://stackoverflow.com/questions/57714740/how-to-xor-three-variables-in-javascript
     };
+	
+    const SPECIAL_CASES = {
+        today: () => {
+            let now = new Date();
+            now.setHours(23, 59, 59, 999);
+            return { type: 'date', value: [now.getFullYear(), now.getMonth(), now.getDate(), now.getTime()] };
+        },
+        tomorrow: () => {
+            let now = new Date();
+            now.setDate(now.getDate() + 1);
+            now.setHours(23, 59, 59, 999);
+            return { type: 'date', value: [now.getFullYear(), now.getMonth(), now.getDate(), now.getTime()] };
+        },
+        yesterday: () => {
+            let now = new Date();
+            now.setDate(now.getDate() - 1);
+            now.setHours(23, 59, 59, 999);
+            return { type: 'date', value: [now.getFullYear(), now.getMonth(), now.getDate(), now.getTime()] };
+        },
+    };
 
     function toDate(text) {
         let date = '';
@@ -882,7 +902,9 @@ ${content.css ? content.css : ''}
 
       <dt> Special words </dt>
       <dd>Some words combined with an operator can be used as shortcuts to achieve a special filter. Here is the current list: <br /><br />
-          <b>today</b> - will result in current date. Useful in combination with >, <, >= or <= to filter date columns by before or after (and including) today.
+          <b>today</b> - will result in current date, end of day. Useful in combination with >, <, >= or <= to filter date columns by before or after (and including) today.<br>
+          <b>tomorrow</b> - will result in tomorrow's date, end of day. Useful in combination with >, <, >= or <= to filter date columns by before or after (and including) tomorrow.<br>
+          <b>yesterday</b> - will result in yesterday's date, end of day. Useful in combination with >, <, >= or <= to filter date columns by before or after (and including) yesterday.
       </dd>
     </dl>
 </details>
@@ -1187,10 +1209,9 @@ ${content.css ? content.css : ''}
             if (+text) return { type: 'number', value: +text, expression: func, modifier: modifier };
 
             // special cases
-            if (text === 'today') {
-                let now = new Date();
-                now.setHours(0);
-                return { type: 'date', value: [now.getFullYear(), now.getMonth(), now.getDate(), now.getTime()], expression: func, modifier: modifier };
+            if (SPECIAL_CASES[text]) {
+                let value = SPECIAL_CASES[text]();
+                return { ...value, expression: func, modifier: modifier };
             }
         }
 
