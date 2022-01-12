@@ -159,7 +159,9 @@ Contains theme color information for the filter bar, so that an attempt can be m
 	iconActiveFill: 'yellow',
 	resizerActiveFill: 'yellow' // version 02 only, resizing feature availble only in it
 }
-
+  ```
+  
+  
 ` refresh ` - possibilities with explanation are below.<br/>
 Contains table data refresh settings. Allows to turn server-side generated tables (sent as HTML) into autofresh-able tables. Essentially, at specified intervals (or manually activated), Filthor makes a request to the server to the current URL, parses the HTML and updates the row by either replacing them, or doing a diffing (based on settings).
 
