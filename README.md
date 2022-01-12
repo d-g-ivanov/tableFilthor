@@ -108,7 +108,21 @@ tableFilthor.init({
 		actionColor: 'white',
 		iconFill: 'white',
 		iconActiveFill: 'yellow',
-	}
+	},
+	
+	// refresh options, v0.3
+	refresh: {
+            autorefresh: false,
+            autorefreshRate: 60 * 60 * 1000, // 1 hour
+            shouldDiff: false,
+            columnToDiffBy: null,
+            pre: [function startSpinner(table) { ... }],
+            post: [function stopSpinner(table) { ... }],
+            keepDefaultHooks: true,
+	    markAddition: Function,
+     	    markRemoval: Function,
+     	    markUpdate: Function,
+        }
 })
   ```
   
@@ -145,6 +159,33 @@ Contains theme color information for the filter bar, so that an attempt can be m
 	iconActiveFill: 'yellow',
 	resizerActiveFill: 'yellow' // version 02 only, resizing feature availble only in it
 }
+
+` refresh ` - possibilities with explanation are below.<br/>
+Contains table data refresh settings. Allows to turn server-side generated tables (sent as HTML) into autofresh-able tables. Essentially, at specified intervals (or manually activated), Filthor makes a request to the server to the current URL, parses the HTML and updates the row by either replacing them, or doing a diffing (based on settings).
+
+`pre` and `post` arrays specify functions to be run before server request and after table update, respectively. By defualt there is a spinner start and end function in each array, so that there is at least minor indicaiton that work is being performed.
+
+`keepDefaultHooks` allows you to keep or discard the default default `pre` and `post` spinner functions.
+
+`autorefresh` and `autorefreshRate` specify whether table data should refresh at a given period in milliseconds.
+
+The rest indicate if diffing between values of the old table and the new one should occur or not. `columnToDiffBy` is the name or index (0-based) of a column that would allow to uniquely identify a row. Otherwise diffing will be impossible. Could extend the funcitonality to diff rows in order in case no column is provided, but this is not implemented yet.
+
+The `mark` functions allow you to specify how to highlight each type of change. Defaults exists.
+
+```sh
+{
+	pre: [],
+        post: [],
+     	keepDefaultHooks: true | false,
+     	autorefresh: true | false,
+     	autorefreshRate: Number of milliseconds
+     	shouldDiff: true | false,
+     	columnToDiffBy: Number | String, // mandatory if shouldDiff is true
+     	markAddition: Function, // takes the row as parameter
+     	markRemoval: Function, // takes the row as parameter
+     	markUpdate: Function // takes the updated cell, a clone of the old cell, and the new cell as parameters
+}
   ```
 
 
@@ -159,6 +200,15 @@ Version 02 has just been added which introduces following updates. No breaking c
 4. Summary table values are filterable - clicking on the count will append the filter to the table
 5. Saving the summary table type (simple / complex) and loading it from local storage
 6. Help menu updated to reflect new features
+
+
+Version 03 has following additions:
+1. Table refreshes for static or server-side generated tables
+   - makes a call to the server, same as current page path, to get the new static html. Extracts the table from the html and replaces the current rows with new ones
+   - manual refresh button available
+   - autorefreshes possible as well
+   - TOBE TESTED - cell diffing and color-coding changes / highlighting the differences (old : new value)
+
 
 
 <!-- ROADMAP -->
