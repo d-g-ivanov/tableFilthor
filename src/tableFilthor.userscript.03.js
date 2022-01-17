@@ -281,37 +281,34 @@ WHAT'S NEW IN 0.3
             const saveBtn = modal.querySelector('.table-filthor-refresh-save');
             if(saveBtn.textContent === 'SAVED!') return false;
 
+            // should autorefresh
             const shouldAutorefresh = modal.querySelector('[name=autorefresh]').checked;
+            const autorefreshRate = parseInt(modal.querySelector('[name=autorefreshRate]').value) || DEFAULT_OPTIONS.refresh.autorefreshRate;
 
-            table.options.refresh.autorefresh = shouldAutorefresh;
+            // should diff
+            let shouldDiff = modal.querySelector('[name=shouldDiff]').checked || DEFAULT_OPTIONS.refresh.shouldDiff;
+            let columnToDiffBy = modal.querySelector('[name=columnToDiffBy]').value || DEFAULT_OPTIONS.refresh.columnToDiffBy;
 
-            if (shouldAutorefresh) {
-                // refresh rate
-                table.options.refresh.autorefreshRate = parseInt(modal.querySelector('[name=autorefreshRate]').value) || DEFAULT_OPTIONS.refresh.autorefreshRate;
-                // should diff
-                let SD = modal.querySelector('[name=shouldDiff]').checked || DEFAULT_OPTIONS.refresh.shouldDiff;
-                // column to diff by
-                let CTDB = modal.querySelector('[name=columnToDiffBy]').value || DEFAULT_OPTIONS.refresh.columnToDiffBy;
-
-                if (SD && !CTDB) {
-                    alert('For diffing you always need to provide the name of the column to serve as basis to diff by. Cells in this column should contain unique information that is not repeated n any other cell, like an ID. You can use the name as whown in the filtering field.');
-
-                    SD = false;
-                    CTDB = '';
-                }
-
-                // should diff
-                table.options.refresh.shouldDiff = SD;
-                // column to diff by
-                table.options.refresh.columnToDiffBy = CTDB;
+             // validations
+            // - nothing for autorefresh
+            // - only for shouldDiff - at this point we need to have the column
+            if (shouldDiff && !columnToDiffBy) {
+                alert('For diffing you always need to provide the name of the column to serve as basis to diff by.\nCells in this column should contain unique information that is not repeated in any other cell, like an ID. You can use the name as whown in the filtering field.\nAt this point, we will automatically assign first column for the diffing.');
+                columnToDiffBy = 0;
             }
 
+            // assign to table options
+            table.options.refresh.autorefresh = shouldAutorefresh;
+            table.options.refresh.autorefreshRate = autorefreshRate;
+            table.options.refresh.shouldDiff = shouldDiff;
+            table.options.refresh.columnToDiffBy = columnToDiffBy;
+
             // save to STORAGE
-            if (shouldAutorefresh) {
-                STORE.save(table.selector + "--autorefresh", 'autorefresh', true);
-                STORE.save(table.selector + "--autorefresh", 'autorefreshRate', table.options.refresh.autorefreshRate);
-                STORE.save(table.selector + "--autorefresh", 'shouldDiff', table.options.refresh.shouldDiff);
-                STORE.save(table.selector + "--autorefresh", 'columnToDiffBy', table.options.refresh.columnToDiffBy);
+            if (shouldAutorefresh || shouldDiff) {
+                STORE.save(table.selector + "--autorefresh", 'autorefresh', shouldAutorefresh);
+                STORE.save(table.selector + "--autorefresh", 'autorefreshRate', autorefreshRate);
+                STORE.save(table.selector + "--autorefresh", 'shouldDiff', shouldDiff);
+                STORE.save(table.selector + "--autorefresh", 'columnToDiffBy', columnToDiffBy);
             } else {
                 STORE.delete(table.selector + "--autorefresh")
             }
@@ -1284,22 +1281,26 @@ ${content.css ? content.css : ''}`,
 `<p>Welcome to your refresh settings! Update them as you please.</p>
 <br/>
 <br/>
-<input type="checkbox" id="table-filthor-autorefresh" class="table-filthor-conditional-show-controller" name="autorefresh" ${table.options.refresh.autorefresh ? 'checked' : ''} />
-<label for="table-filthor-autorefresh">Turn on autorefreshes.</label>
-<br/>
-<br/>
-<div class="table-filthor-conditional-show">
+<div class="table-filthor-refresh-seciton">
+  <input type="checkbox" id="table-filthor-autorefresh" class="table-filthor-conditional-show-controller" name="autorefresh" ${table.options.refresh.autorefresh ? 'checked' : ''} />
+  <label for="table-filthor-autorefresh">Turn on autorefreshes.</label>
+
+  <div class="table-filthor-conditional-show">
     Refresh table data every <input type="number" id="table-filthor-autorefresh-rate" name="autorefreshRate" value="${table.options.refresh.autorefreshRate}" /> milliseconds (defaults to 1 hour).
+  </div>
 </div>
-<div class="table-filthor-conditional-show">
-    <input type="checkbox" id="table-filthor-diff" class="table-filthor-conditional-show-controller" name="shouldDiff" ${table.options.refresh.shouldDiff ? 'checked' : ''} />
-    <label for="table-filthor-diff">Turn on advance refreshing which shows differences between the old version and the updates.</label>
-</div>
-<div class="table-filthor-conditional-show">
-    Refresh table data every <input type="text" id="table-filthor-columnToDiffBy" name="columnToDiffBy" value="${table.options.refresh.columnToDiffBy || ''}" /> milliseconds.
+
+<div class="table-filthor-refresh-seciton">
+  <input type="checkbox" id="table-filthor-diff" class="table-filthor-conditional-show-controller" name="shouldDiff" ${table.options.refresh.shouldDiff ? 'checked' : ''} />
+  <label for="table-filthor-diff">Turn on advance refreshing which shows differences between the old version and the updates.</label>
+
+  <div class="table-filthor-conditional-show">
+    (Mandatory) Column <input type="text" id="table-filthor-columnToDiffBy" name="columnToDiffBy" value="${table.options.refresh.columnToDiffBy || ''}" /> contains unique information to identify each of the diffing rows.
+  </div>
 </div>`,
             css:
-`.table-filthor-conditional-show { display: none; }
+`.table-filthor-refresh-seciton {margin-bottom: 2em;}
+.table-filthor-conditional-show { display: none; }
 .table-filthor-conditional-show-controller:checked ~ .table-filthor-conditional-show { display: block; margin: 1em 0; }
 .table-filthor-refresh-save { background-color: #546E7A !important; color: white !important; }
 .table-filthor-refresh-save:hover { opacity: 0.7; }`,
