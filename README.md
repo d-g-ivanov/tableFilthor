@@ -212,6 +212,41 @@ Version 03 has following additions:
    - TOBE TESTED - cell diffing and color-coding changes / highlighting the differences (old : new value)
 
 
+Version 04 has following additions:
+1. Dropdowns for simple filtering - excel-like
+
+```sh
+    dropdowns: {
+        use: true,
+        columns: [], column names, or index (0 based)
+        limit: -1, no limit, default; number of items to be displayed. If over that number, menu will not contain itesm
+    }
+
+    NOTE - dropdowns dos not update based on handwritten filters
+```
+
+
+2. Cell highlighting and comments column
+
+```sh
+    highlights: {
+        uniqueId: string, column name to be used as reference for localStorage. should be unique to the table so that the roww can be identified between refreshes
+        comments: boolean; indicates whether to use or not a comments column
+        label: string; name for the comments column
+        commentsWidth: number; initial width of the comments column; defaults to 200
+    }
+```
+
+
+3. Added "blank" as keyword to isolate cells with no content; used as "=blank" or "!=blank"
+
+4. Added user confirm if they want to keep hidden columns when exporting the table to csv
+
+5. `options.skipColumns` is not a 0-based array
+
+6. Added `options.processors.pre` = [] - alows for custom functions to be performed on the table, before adding the filtering and all that jazz
+
+
 
 <!-- ROADMAP -->
 ## Roadmap
