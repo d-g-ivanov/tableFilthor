@@ -1,18 +1,11 @@
-/*!
- * TableFilthor - Add filtering to tables on any webpage
- *
- * tableFilthor v0.3.0
- * (c) 2022 Daniel Ivanov
- */
-
-/**
- * @summary Add filtering to tables on any webpage
- * @license MIT
- * @author Daniel Ivanov
- * @param {object} PUBLIC_API - Single object that contains the public api of the plugin; available under window.tableFilthor namespace. Currently exports only init function that takes a css selector for the affected tables, and a config object. Both are optional.
- */
-
-/*
+// ==UserScript==
+// @name         table-filthor
+// @namespace    tableFilthor
+// @version      0.4
+// @description  Add filtering to tables on any webpage
+// @author       Daniel Ivanov
+// @match        *://*/*
+// ==/UserScript==
 
 /*
 WHAT'S NEW IN 0.4
