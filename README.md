@@ -218,8 +218,8 @@ Version 04 has following additions:
 ```sh
     dropdowns: {
         use: true,
-        columns: [], column names, or index (0 based)
-        limit: -1, no limit, default; number of items to be displayed. If over that number, menu will not contain itesm
+        columns: [], // column names, or index (0 based)
+        limit: -1, // no limit, default; number of items to be displayed. If over that number, menu will not contain itesm
     }
 
     NOTE - dropdowns dos not update based on handwritten filters
@@ -230,10 +230,10 @@ Version 04 has following additions:
 
 ```sh
     highlights: {
-        uniqueId: string, column name to be used as reference for localStorage. should be unique to the table so that the roww can be identified between refreshes
-        comments: boolean; indicates whether to use or not a comments column
-        label: string; name for the comments column
-        commentsWidth: number; initial width of the comments column; defaults to 200
+        uniqueId: string, // column name to be used as reference for localStorage. should be unique to the table so that the roww can be identified between refreshes
+        comments: boolean, // indicates whether to use or not a comments column
+        label: string, // name for the comments column
+        commentsWidth: number // initial width of the comments column; defaults to 200
     }
 ```
 
